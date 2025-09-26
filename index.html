@@ -110,6 +110,12 @@
             top: 0;
             z-index: 1000;
             transition: var(--transition);
+            transform: translateY(0);
+        }
+
+        header.hidden {
+            transform: translateY(-100%);
+            box-shadow: none;
         }
 
         header.scrolled {
@@ -1057,9 +1063,31 @@
             margin-top: 20px;
             display: none;
         }
+
+        /* Menu Hide/Show Indicator */
+        .menu-indicator {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 2px;
+            z-index: 1001;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .menu-indicator.visible {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+    <!-- Menu Indicator -->
+    <div class="menu-indicator" id="menuIndicator"></div>
+
     <!-- Header Section -->
     <header id="header">
         <div class="container">
@@ -1449,17 +1477,91 @@
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
         const linksContainer = document.querySelector('.links-container');
         const header = document.getElementById('header');
+        const menuIndicator = document.getElementById('menuIndicator');
 
         mobileMenuBtn.addEventListener('click', () => {
             linksContainer.classList.toggle('active');
         });
 
-        // Header scroll effect
+        // Swipe detection for menu hide/show
+        let touchStartY = 0;
+        let touchEndY = 0;
+        let lastScrollTop = 0;
+        let isScrolling = false;
+        let scrollTimeout;
+
+        // Touch events for mobile
+        document.addEventListener('touchstart', e => {
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        // Scroll events for desktop
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
+            // Clear the timeout if it's already set
+            clearTimeout(scrollTimeout);
+            
+            // Set a new timeout
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+                menuIndicator.classList.remove('visible');
+            }, 150);
+
+            if (!isScrolling) {
+                isScrolling = true;
+                menuIndicator.classList.add('visible');
+            }
+
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down
+                header.classList.add('hidden');
+            } else {
+                // Scrolling up
+                header.classList.remove('hidden');
+            }
+            
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            
+            // Header scrolled effect
+            if (scrollTop > 100) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
+            }
+        });
+
+        function handleSwipe() {
+            const swipeDistance = touchStartY - touchEndY;
+            
+            // Minimum swipe distance to trigger menu hide/show
+            if (Math.abs(swipeDistance) > 50) {
+                if (swipeDistance > 0) {
+                    // Swipe up - hide menu
+                    header.classList.add('hidden');
+                } else {
+                    // Swipe down - show menu
+                    header.classList.remove('hidden');
+                }
+            }
+        }
+
+        // Show menu when hovering near top of screen (desktop)
+        document.addEventListener('mousemove', e => {
+            if (e.clientY < 100) {
+                header.classList.remove('hidden');
+                menuIndicator.classList.add('visible');
+                
+                // Hide indicator after a delay
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    menuIndicator.classList.remove('visible');
+                }, 2000);
             }
         });
 
