@@ -1900,12 +1900,26 @@
         }
     });
 
-    // Newsletter Form
+    // Newsletter Form + Google Sheet Integration
     const newsletterForm = document.getElementById('newsletterForm');
     newsletterForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        showNotification('Thanks for subscribing to our newsletter!');
-        newsletterForm.reset();
+        const email = newsletterForm.querySelector('input').value;
+        const scriptURL = "https://script.google.com/macros/s/AKfycbwzKjjiYiPYGP3pfrM2KQoPmAaTZbKXW7rpeRGUzxisgsyU-2HbnXwIKDXRSvfO5YHfLQ/exec";
+
+        fetch(scriptURL, {
+            method: "POST",
+            body: JSON.stringify({ email: email })
+        })
+        .then(res => res.text())
+        .then(() => {
+            showNotification("✅ Thanks for subscribing!");
+            newsletterForm.reset();
+        })
+        .catch(err => {
+            showNotification("❌ Subscription failed, please try again.");
+            console.error(err);
+        });
     });
 
     // Smooth Scrolling for Anchor Links
