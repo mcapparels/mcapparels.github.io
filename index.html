@@ -21,6 +21,7 @@
     fbq('track', 'PageView');
     </script>
     <!-- End Facebook Pixel Code -->
+     
     <style>
         /* Global Styles */
         :root {
@@ -48,6 +49,7 @@
             color: var(--text);
             overflow-x: hidden;
             line-height: 1.6;
+            padding-top: 130px; /* Account for fixed header height */
         }
 
         .container {
@@ -121,20 +123,22 @@
         header {
             background-color: var(--light);
             box-shadow: var(--shadow);
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 100%;
             z-index: 1000;
-            transition: var(--transition);
+            transition: transform 0.3s ease, background-color 0.3s ease;
             transform: translateY(0);
+        }
+
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
         }
 
         header.hidden {
             transform: translateY(-100%);
-            box-shadow: none;
-        }
-
-        header.scrolled {
-            padding: 5px 0;
         }
 
         .navbar {
@@ -235,10 +239,11 @@
             list-style: none;
             border-top: 1px solid #eee;
             padding: 15px 0;
+            transition: var(--transition);
         }
 
         .link-item {
-            margin: 0 20px;
+            margin: 0 15px;
             position: relative;
         }
 
@@ -250,6 +255,9 @@
             font-size: 0.95rem;
             transition: var(--transition);
             letter-spacing: 0.5px;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
         }
 
         .link:hover {
@@ -269,6 +277,60 @@
 
         .link:hover::after {
             width: 100%;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--light);
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            border-radius: 4px;
+            z-index: 1001;
+            padding: 10px 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--text);
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-transform: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(26, 77, 44, 0.05);
+            color: var(--primary);
+            padding-left: 25px;
+        }
+
+        .dropdown-icon {
+            margin-left: 5px;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .dropdown:hover .dropdown-icon {
+            transform: rotate(180deg);
         }
 
         /* Hero Section */
@@ -797,6 +859,37 @@
             color: var(--text-light);
         }
 
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 999;
+            box-shadow: var(--shadow);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
         /* Footer */
         footer {
             background-color: var(--primary-dark);
@@ -858,6 +951,28 @@
             color: var(--accent);
         }
 
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-right: 10px;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
         .newsletter-form {
             display: flex;
             margin-top: 20px;
@@ -910,6 +1025,18 @@
                 padding-right: 0;
                 margin-bottom: 40px;
             }
+            
+            .dropdown-content {
+                position: static;
+                display: none;
+                box-shadow: none;
+                padding-left: 20px;
+                background: rgba(0,0,0,0.03);
+            }
+            
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
         }
 
         @media (max-width: 768px) {
@@ -950,6 +1077,37 @@
                 width: 280px;
                 right: -50px;
             }
+            
+            body {
+                padding-top: 110px; /* Adjust for smaller header on mobile */
+            }
+            
+            .back-to-top {
+                bottom: 20px;
+                left: 20px;
+                width: 45px;
+                height: 45px;
+            }
+            
+            .links-container {
+                flex-direction: column;
+                padding: 10px 0;
+            }
+            
+            .link-item {
+                margin: 5px 0;
+                width: 100%;
+                text-align: left;
+            }
+            
+            .link {
+                padding: 12px 20px;
+                width: 100%;
+            }
+            
+            .dropdown-icon {
+                margin-left: auto;
+            }
         }
 
         .mobile-menu-btn {
@@ -968,7 +1126,6 @@
 
             .links-container {
                 display: none;
-                flex-direction: column;
                 position: absolute;
                 top: 100%;
                 left: 0;
@@ -976,15 +1133,11 @@
                 background: var(--light);
                 box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
                 z-index: 99;
-                padding: 20px 0;
+                padding: 10px 0;
             }
 
             .links-container.active {
                 display: flex;
-            }
-
-            .link-item {
-                margin: 10px 0;
             }
         }
 
@@ -1037,6 +1190,7 @@
             box-shadow: var(--shadow);
             cursor: pointer;
             transition: var(--transition);
+            text-decoration: none;
         }
 
         .action-btn:hover {
@@ -1078,31 +1232,9 @@
             margin-top: 20px;
             display: none;
         }
-
-        /* Menu Hide/Show Indicator */
-        .menu-indicator {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 4px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 2px;
-            z-index: 1001;
-            transition: opacity 0.3s ease;
-            opacity: 0;
-        }
-
-        .menu-indicator.visible {
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
-    <!-- Menu Indicator -->
-    <div class="menu-indicator" id="menuIndicator"></div>
-
     <!-- Header Section -->
     <header id="header">
         <div class="container">
@@ -1132,13 +1264,43 @@
             </nav>
             <ul class="links-container">
                 <li class="link-item"><a href="#" class="link">Home</a></li>
-                <li class="link-item"><a href="#products" class="link">Products</a></li>
+                
+                <li class="link-item dropdown">
+                    <a href="#" class="link">Shirts <i class="fas fa-chevron-down dropdown-icon"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#" class="dropdown-item">Kids</a>
+                        <a href="#" class="dropdown-item">Juniors</a>
+                    </div>
+                </li>
+                
+                <li class="link-item dropdown">
+                    <a href="#" class="link">Dress Codes <i class="fas fa-chevron-down dropdown-icon"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#" class="dropdown-item">Wedding</a>
+                        <a href="#" class="dropdown-item">Festivals</a>
+                        <a href="#" class="dropdown-item">Events</a>
+                    </div>
+                </li>
+                
+                <li class="link-item dropdown">
+                    <a href="#" class="link">Uniforms <i class="fas fa-chevron-down dropdown-icon"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#" class="dropdown-item">Schools</a>
+                        <a href="#" class="dropdown-item">Colleges</a>
+                        <a href="#" class="dropdown-item">Hospital</a>
+                    </div>
+                </li>
+                
                 <li class="link-item"><a href="#about" class="link">About</a></li>
-                <li class="link-item"><a href="#testimonials" class="link">Testimonials</a></li>
                 <li class="link-item"><a href="#contact" class="link">Contact</a></li>
             </ul>
         </div>
     </header>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -1441,6 +1603,12 @@
                 <div class="footer-section">
                     <h3>QLAND</h3>
                     <p>Best shirt production in Malappuram. Specializing in high-quality shirts and uniforms for junior men with a commitment to excellence.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61580007204374" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/_qland_" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/+918137088088" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="mailto:ghffhg@gmail.com"><i class="far fa-envelope"></i></a>
+                    </div>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
@@ -1488,374 +1656,326 @@
     </div>
 
     <script>
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const linksContainer = document.querySelector('.links-container');
-        const header = document.getElementById('header');
-        const menuIndicator = document.getElementById('menuIndicator');
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const linksContainer = document.querySelector('.links-container');
+    const header = document.getElementById('header');
+    const dropdowns = document.querySelectorAll('.dropdown');
 
-        mobileMenuBtn.addEventListener('click', () => {
-            linksContainer.classList.toggle('active');
-        });
+    mobileMenuBtn.addEventListener('click', () => {
+        linksContainer.classList.toggle('active');
+    });
 
-        // Swipe detection for menu hide/show
-        let touchStartY = 0;
-        let touchEndY = 0;
-        let lastScrollTop = 0;
-        let isScrolling = false;
-        let scrollTimeout;
-
-        // Touch events for mobile
-        document.addEventListener('touchstart', e => {
-            touchStartY = e.changedTouches[0].screenY;
-        });
-
-        document.addEventListener('touchend', e => {
-            touchEndY = e.changedTouches[0].screenY;
-            handleSwipe();
-        });
-
-        // Scroll events for desktop
-        window.addEventListener('scroll', () => {
-            // Clear the timeout if it's already set
-            clearTimeout(scrollTimeout);
-            
-            // Set a new timeout
-            scrollTimeout = setTimeout(() => {
-                isScrolling = false;
-                menuIndicator.classList.remove('visible');
-            }, 150);
-
-            if (!isScrolling) {
-                isScrolling = true;
-                menuIndicator.classList.add('visible');
-            }
-
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                // Scrolling down
-                header.classList.add('hidden');
-            } else {
-                // Scrolling up
-                header.classList.remove('hidden');
-            }
-            
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-            
-            // Header scrolled effect
-            if (scrollTop > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-        
-        function handleSwipe() {
-            const swipeDistance = touchStartY - touchEndY;
-            
-            // Minimum swipe distance to trigger menu hide/show
-            if (Math.abs(swipeDistance) > 50) {
-                if (swipeDistance > 0) {
-                    // Swipe up - hide menu
-                    header.classList.add('hidden');
-                } else {
-                    // Swipe down - show menu
-                    header.classList.remove('hidden');
-                }
-            }
-        }
-
-        // Show menu when hovering near top of screen (desktop)
-        document.addEventListener('mousemove', e => {
-            if (e.clientY < 100) {
-                header.classList.remove('hidden');
-                menuIndicator.classList.add('visible');
-                
-                // Hide indicator after a delay
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    menuIndicator.classList.remove('visible');
-                }, 2000);
-            }
-        });
-
-        // Product Filtering
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const productCards = document.querySelectorAll('.product-card');
-        
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active class from all buttons
-                filterBtns.forEach(b => b.classList.remove('active'));
-                // Add active class to clicked button
-                btn.classList.add('active');
-                
-                const filter = btn.getAttribute('data-filter');
-                
-                productCards.forEach(card => {
-                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
-
-        // Cart Functionality
-        const cartToggle = document.getElementById('cartToggle');
-        const cartPreview = document.getElementById('cartPreview');
-        const cartItems = document.getElementById('cartItems');
-        const cartCount = document.querySelector('.cart-count');
-        const cartTotal = document.getElementById('cartTotal');
-        let cart = [];
-        let count = 0;
-
-        cartToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            cartPreview.classList.toggle('active');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!cartPreview.contains(e.target) && e.target !== cartToggle) {
-                cartPreview.classList.remove('active');
-            }
-        });
-
-        // Add to Cart Functionality
-        const addToCartBtns = document.querySelectorAll('.card-btn');
-
-        addToCartBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = btn.getAttribute('data-id');
-                const name = btn.getAttribute('data-name');
-                const price = parseInt(btn.getAttribute('data-price'));
-                const image = btn.getAttribute('data-image');
-                
-                // Check if product already in cart
-                const existingItem = cart.find(item => item.id === id);
-                
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    cart.push({
-                        id,
-                        name,
-                        price,
-                        image,
-                        quantity: 1
-                    });
-                }
-                
-                updateCart();
-                showNotification(`${name} added to cart!`);
-            });
-        });
-
-        function updateCart() {
-            // Update cart count
-            count = cart.reduce((total, item) => total + item.quantity, 0);
-            cartCount.textContent = count;
-            
-            // Update cart items
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
-            } else {
-                cartItems.innerHTML = '';
-                let total = 0;
-                
-                cart.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
-                    
-                    const cartItem = document.createElement('div');
-                    cartItem.className = 'cart-item';
-                    cartItem.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" class="cart-item-img">
-                        <div class="cart-item-details">
-                            <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">₹${item.price} x ${item.quantity}</div>
-                            <button class="remove-item" data-id="${item.id}">Remove</button>
-                        </div>
-                    `;
-                    
-                    cartItems.appendChild(cartItem);
-                });
-                
-                // Add remove event listeners
-                document.querySelectorAll('.remove-item').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = e.target.getAttribute('data-id');
-                        removeFromCart(id);
-                    });
-                });
-                
-                cartTotal.textContent = `₹${total}`;
-            }
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.id !== id);
-            updateCart();
-        }
-
-        // Contact Form Validation
-        const contactForm = document.getElementById('contactForm');
-        const formSpinner = document.getElementById('formSpinner');
-        const formSuccess = document.getElementById('formSuccess');
-        
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            let isValid = true;
-            
-            // Validate name
-            const name = document.getElementById('name');
-            const nameError = document.getElementById('nameError');
-            if (!name.value.trim()) {
-                name.classList.add('error');
-                nameError.style.display = 'block';
-                isValid = false;
-            } else {
-                name.classList.remove('error');
-                nameError.style.display = 'none';
-            }
-            
-            // Validate email
-            const email = document.getElementById('email');
-            const emailError = document.getElementById('emailError');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!email.value.trim() || !emailRegex.test(email.value)) {
-                email.classList.add('error');
-                emailError.style.display = 'block';
-                isValid = false;
-            } else {
-                email.classList.remove('error');
-                emailError.style.display = 'none';
-            }
-            
-            // Validate message
-            const message = document.getElementById('message');
-            const messageError = document.getElementById('messageError');
-            if (!message.value.trim()) {
-                message.classList.add('error');
-                messageError.style.display = 'block';
-                isValid = false;
-            } else {
-                message.classList.remove('error');
-                messageError.style.display = 'none';
-            }
-            
-            if (isValid) {
-                formSpinner.style.display = 'block';
-                
-                // Simulate form submission
-                setTimeout(() => {
-                    formSpinner.style.display = 'none';
-                    formSuccess.style.display = 'block';
-                    contactForm.reset();
-                    
-                    setTimeout(() => {
-                        formSuccess.style.display = 'none';
-                    }, 5000);
-                }, 1500);
-            }
-        });
-
-        // Newsletter Form
-        const newsletterForm = document.getElementById('newsletterForm');
-        
-        newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            showNotification('Thanks for subscribing to our newsletter!');
-            newsletterForm.reset();
-        });
-
-        // Smooth Scrolling for Anchor Links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+    // Mobile dropdown toggle
+    if (window.innerWidth <= 768) {
+        dropdowns.forEach(dropdown => {
+            const link = dropdown.querySelector('.link');
+            link.addEventListener('click', (e) => {
                 e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 100,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Close mobile menu if open
-                    if(linksContainer.classList.contains('active')) {
-                        linksContainer.classList.remove('active');
-                    }
-                }
+                dropdown.classList.toggle('active');
             });
         });
+    }
 
-        // Animation on scroll
-        function checkScroll() {
-            const elements = document.querySelectorAll('.fade-in');
-            
-            elements.forEach(element => {
-                const elementPosition = element.getBoundingClientRect().top;
-                const screenPosition = window.innerHeight / 1.3;
-                
-                if(elementPosition < screenPosition) {
-                    element.style.opacity = 1;
-                    element.style.transform = 'translateY(0)';
-                }
-            });
+    // Header scroll effect and hide/show functionality
+    let lastScrollY = window.scrollY;
+    const scrollThreshold = 100;
+    const scrollSensitivity = 5;
+
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
         }
 
-        // Initialize elements for fade-in
-        document.querySelectorAll('.fade-in').forEach(element => {
-            element.style.opacity = 0;
-            element.style.transform = 'translateY(20px)';
-            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        if (currentScrollY > scrollThreshold) {
+            if (currentScrollY > lastScrollY + scrollSensitivity) {
+                header.classList.add('hidden');
+            } else if (currentScrollY < lastScrollY - scrollSensitivity) {
+                header.classList.remove('hidden');
+            }
+        } else {
+            header.classList.remove('hidden');
+        }
+
+        lastScrollY = currentScrollY;
+
+        const backToTop = document.getElementById('backToTop');
+        if (currentScrollY > 300) {
+            backToTop.classList.add('show');
+        } else {
+            backToTop.classList.remove('show');
+        }
+    });
+
+    // Back to top functionality
+    document.getElementById('backToTop').addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Product Filtering
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('.product-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.getAttribute('data-filter');
+
+            productCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
+    });
 
-        window.addEventListener('scroll', checkScroll);
-        window.addEventListener('load', checkScroll);
+    // Cart Functionality
+    const cartToggle = document.getElementById('cartToggle');
+    const cartPreview = document.getElementById('cartPreview');
+    const cartItems = document.getElementById('cartItems');
+    const cartCount = document.querySelector('.cart-count');
+    const cartTotal = document.getElementById('cartTotal');
+    let cart = [];
+    let count = 0;
 
-        // Notification function
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.style.position = 'fixed';
-            notification.style.bottom = '20px';
-            notification.style.right = '20px';
-            notification.style.backgroundColor = 'var(--primary)';
-            notification.style.color = 'white';
-            notification.style.padding = '12px 20px';
-            notification.style.borderRadius = '4px';
-            notification.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-            notification.style.zIndex = '1000';
-            notification.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+    cartToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        cartPreview.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!cartPreview.contains(e.target) && e.target !== cartToggle) {
+            cartPreview.classList.remove('active');
+        }
+    });
+
+    // Add to Cart Functionality
+    const addToCartBtns = document.querySelectorAll('.card-btn');
+
+    addToCartBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const price = parseInt(btn.getAttribute('data-price'));
+            const image = btn.getAttribute('data-image');
+
+            const existingItem = cart.find(item => item.id === id);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id, name, price, image, quantity: 1 });
+            }
+
+            updateCart();
+            showNotification(`${name} added to cart!`);
+        });
+    });
+
+    function updateCart() {
+        count = cart.reduce((total, item) => total + item.quantity, 0);
+        cartCount.textContent = count;
+
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
+        } else {
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-img">
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">₹${item.price} x ${item.quantity}</div>
+                        <button class="remove-item" data-id="${item.id}">Remove</button>
+                    </div>
+                `;
+
+                cartItems.appendChild(cartItem);
+            });
+
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    removeFromCart(id);
+                });
+            });
+
+            cartTotal.textContent = `₹${total}`;
+        }
+    }
+
+    function removeFromCart(id) {
+        cart = cart.filter(item => item.id !== id);
+        updateCart();
+    }
+
+    // ✅ Contact Form Validation + Google Sheets Integration
+    const contactForm = document.getElementById('contactForm');
+    const formSpinner = document.getElementById('formSpinner');
+    const formSuccess = document.getElementById('formSuccess');
+
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let isValid = true;
+
+        const name = document.getElementById('name');
+        const nameError = document.getElementById('nameError');
+        if (!name.value.trim()) {
+            name.classList.add('error');
+            nameError.style.display = 'block';
+            isValid = false;
+        } else {
+            name.classList.remove('error');
+            nameError.style.display = 'none';
+        }
+
+        const email = document.getElementById('email');
+        const emailError = document.getElementById('emailError');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim() || !emailRegex.test(email.value)) {
+            email.classList.add('error');
+            emailError.style.display = 'block';
+            isValid = false;
+        } else {
+            email.classList.remove('error');
+            emailError.style.display = 'none';
+        }
+
+        const message = document.getElementById('message');
+        const messageError = document.getElementById('messageError');
+        if (!message.value.trim()) {
+            message.classList.add('error');
+            messageError.style.display = 'block';
+            isValid = false;
+        } else {
+            message.classList.remove('error');
+            messageError.style.display = 'none';
+        }
+
+        if (isValid) {
+            formSpinner.style.display = 'block';
+
+            const scriptURL = "https://script.google.com/macros/s/AKfycbw03M9PgK646t8cjbrk0f1Wgk0Cm-KYKaQY_VsX6JssbnKCBVPOWcJjiYX2x6tuOhXq/exec";
+
+            fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify({
+                    name: name.value,
+                    email: email.value,
+                    phone: document.getElementById('phone').value,
+                    message: message.value
+                })
+            })
+            .then(res => res.text())
+            .then(() => {
+                formSpinner.style.display = 'none';
+                formSuccess.style.display = 'block';
+                contactForm.reset();
+
+                setTimeout(() => {
+                    formSuccess.style.display = 'none';
+                }, 5000);
+            })
+            .catch(err => {
+                formSpinner.style.display = 'none';
+                showNotification("Error submitting form. Please try again.");
+                console.error(err);
+            });
+        }
+    });
+
+    // Newsletter Form
+    const newsletterForm = document.getElementById('newsletterForm');
+    newsletterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        showNotification('Thanks for subscribing to our newsletter!');
+        newsletterForm.reset();
+    });
+
+    // Smooth Scrolling for Anchor Links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if(targetId === '#') return;
+            const targetElement = document.querySelector(targetId);
+            if(targetElement) {
+                window.scrollTo({ top: targetElement.offsetTop - 100, behavior: 'smooth' });
+                if(linksContainer.classList.contains('active')) {
+                    linksContainer.classList.remove('active');
+                }
+            }
+        });
+    });
+
+    // Animation on scroll
+    function checkScroll() {
+        const elements = document.querySelectorAll('.fade-in');
+        elements.forEach(element => {
+            const elementPosition = element.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+            if(elementPosition < screenPosition) {
+                element.style.opacity = 1;
+                element.style.transform = 'translateY(0)';
+            }
+        });
+    }
+
+    document.querySelectorAll('.fade-in').forEach(element => {
+        element.style.opacity = 0;
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    });
+
+    window.addEventListener('scroll', checkScroll);
+    window.addEventListener('load', checkScroll);
+
+    // Notification function
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.position = 'fixed';
+        notification.style.bottom = '20px';
+        notification.style.right = '20px';
+        notification.style.backgroundColor = 'var(--primary)';
+        notification.style.color = 'white';
+        notification.style.padding = '12px 20px';
+        notification.style.borderRadius = '4px';
+        notification.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+        notification.style.zIndex = '1000';
+        notification.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+        notification.style.transform = 'translateX(100px)';
+        notification.style.opacity = '0';
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+            notification.style.opacity = '1';
+        }, 10);
+
+        setTimeout(() => {
             notification.style.transform = 'translateX(100px)';
             notification.style.opacity = '0';
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-                notification.style.opacity = '1';
-            }, 10);
-            
-            // Animate out after 3 seconds
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100px)';
-                notification.style.opacity = '0';
-                
-                // Remove from DOM after animation
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
-    </script>
+            setTimeout(() => { document.body.removeChild(notification); }, 300);
+        }, 3000);
+    }
+</script>
 </body>
 </html>
